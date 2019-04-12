@@ -481,3 +481,16 @@ let table vars expr =
 
   let var_tables = build_tables StringMap.empty vars in
   List.map (function vtable -> (StringMap.bindings vtable, eval vtable expr)) var_tables;;
+
+
+(* 49. *)
+
+let rec gray n =
+  let prefix_with code prefix =
+    List.map (function bitstr -> prefix ^ bitstr) code
+  in
+  match n with
+  | 1 -> ["0"; "1"]
+  | n -> let prev = gray (n - 1) in
+         let next = List.rev prev in
+         prefix_with prev "0" @ prefix_with next "1";;
