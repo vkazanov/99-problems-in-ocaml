@@ -494,3 +494,47 @@ let rec gray n =
   | n -> let prev = gray (n - 1) in
          let next = List.rev prev in
          prefix_with prev "0" @ prefix_with next "1";;
+
+(* 50. Huffman code*)
+
+type htree =
+  | Leaf of string * int
+  | Node of htree * htree * int;;
+
+let huffman fs =
+  let hfreq = function
+    | Leaf (_, freq) -> freq
+    | Node (_, _, freq) -> freq
+  in
+
+  let hcompare l r = hfreq l - hfreq r in
+
+  (* Use Set as an improvised priority queue *)
+  let module PQSet = Set.Make (struct type t = htree let compare = hcompare end) in
+
+  (* Build a Huffman tree *)
+  (* TODO: kinda ugly *)
+  let rec build_tree pqueue =
+    if PQSet.cardinal pqueue > 1 then
+      let l = PQSet.min_elt pqueue in
+      let pqueue1 = PQSet.remove l pqueue in
+      let r = PQSet.min_elt pqueue1 in
+      let pqueue2 = PQSet.remove r pqueue1 in
+      let new_node = Node (l, r, hfreq l + hfreq r) in
+
+      build_tree (PQSet.add new_node pqueue2)
+    else
+      PQSet.min_elt pqueue
+  in
+
+  (* Convert the tree to chars mapped to codes *)
+  let rec tree_to_code prefix = function
+    | Node (l, r, _) -> tree_to_code ("0" ^ prefix) l @ tree_to_code ("1" ^ prefix) r
+    | Leaf (c, _) -> [c, prefix]
+  in
+
+  (* A PQueue of Leafs *)
+  let fs_pqueue = PQSet.of_list (List.map (fun (c, f) -> Leaf (c, f)) fs)
+  in
+
+  tree_to_code "" (build_tree fs_pqueue)
