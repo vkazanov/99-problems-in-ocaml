@@ -537,4 +537,38 @@ let huffman fs =
   let fs_pqueue = PQSet.of_list (List.map (fun (c, f) -> Leaf (c, f)) fs)
   in
 
-  tree_to_code "" (build_tree fs_pqueue)
+  tree_to_code "" (build_tree fs_pqueue);;
+
+(*
+ * Binary trees
+ **)
+
+type 'a binary_tree =
+  | Empty
+  | Node of 'a * 'a binary_tree * 'a binary_tree;;
+
+(* 55. completely balanced trees *)
+
+let rec cbal_tree node_num =
+  let build_variants l r =
+    let variants = List.map (fun ltree -> List.map (fun rtree -> Node ('x', ltree, rtree)) r) l in
+    List.fold_left List.append [] variants
+  in
+  match node_num with
+  | 0 -> [Empty]
+  | 1 -> [Node ('x', Empty, Empty)]
+  | n when n mod 2 = 0 ->
+     let t1 = cbal_tree (n / 2 - 1) in
+     let t2 = cbal_tree (n / 2) in
+     build_variants t1 t2 @ build_variants t1 t2
+  | n ->
+     let ts = cbal_tree (n / 2) in
+     build_variants ts ts;;
+
+let rec bt_depth = function
+  | Empty -> 0
+  | Node (_, l, r) -> max (bt_depth l) (bt_depth l);;
+
+let rec bt_check = function
+  | Empty -> true
+  | Node (_, l, r) -> abs ((bt_depth l) - (bt_depth r)) <= 1
