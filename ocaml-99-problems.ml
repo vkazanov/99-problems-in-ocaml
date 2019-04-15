@@ -565,10 +565,15 @@ let rec cbal_tree node_num =
      let ts = cbal_tree (n / 2) in
      build_variants ts ts;;
 
-let rec bt_depth = function
-  | Empty -> 0
-  | Node (_, l, r) -> max (bt_depth l) (bt_depth l);;
+(* 56.  *)
 
-let rec bt_check = function
+let is_symmetric = function
   | Empty -> true
-  | Node (_, l, r) -> abs ((bt_depth l) - (bt_depth r)) <= 1
+  | Node (_, l, r) ->
+     let rec is_mirror left right =
+       match left, right with
+       | Node (_, ll, lr), Node (_, rl, rr) -> is_mirror ll rr && is_mirror lr rl
+       | Empty, Empty -> true
+       | _ -> false
+     in
+     is_mirror l r;;
