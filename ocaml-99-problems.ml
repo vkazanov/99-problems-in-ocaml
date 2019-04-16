@@ -577,3 +577,19 @@ let is_symmetric = function
        | _ -> false
      in
      is_mirror l r;;
+
+(* 57. *)
+
+let construct values =
+  let rec push value tree = match tree with
+    | Empty -> Node (value, Empty, Empty)
+    | Node (node_val, l, r) ->
+       if value = node_val then tree
+       else if value < node_val then Node (node_val, push value l, r)
+       else Node (node_val, l, push value r)
+  in
+  let rec aux btree = function
+    | h::tl -> aux (push h btree) tl
+    | [] -> btree
+  in
+  aux Empty values;;
