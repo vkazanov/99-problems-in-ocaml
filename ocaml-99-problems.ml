@@ -616,21 +616,57 @@ let rec hbal_tree height =
      let t2 = hbal_tree (n - 2) in
      build_variants t1 t1 @ build_variants t1 t2 @ build_variants t2 t1;;
 
-(* 60. *)
+(* 60. TODO*)
 
-let max_nodes h = 1 lsl h - 1;;
+(* let max_nodes h = 1 lsl h - 1;;
+ *
+ * let rec min_nodes h = match h with
+ *   | 0 -> 0
+ *   | 1 -> 1
+ *   | n -> 1 + min_nodes (n - 1) + min_nodes (n - 2);;
+ *
+ * let min_height n =
+ *   int_of_float(ceil(log(float(n + 1)) /. log 2.));;
+ *
+ * let max_height n =
+ *   let rec max_height_search h m_h m_h1 n =
+ *   if m_h <= n then max_height_search (h + 1) m_h1 (m_h1 + m_h + 1) n
+ *   else h - 1
+ *   in
+ *   max_height_search 0 0 1 n;;
+ *
+ * let hbal_tree_nodes n =
+ *   let min_h = min_height n and
+ *       max_h = max_height n in
+ *   let trees = List.map hbal_tree (range min_h max_h) in
+ *   List.flatten trees *)
 
-let rec min_nodes h = match h with
-  | 0 -> 0
-  | 1 -> 1
-  | n -> 1 + min_nodes (n - 1) + min_nodes (n - 2);;
+(* 61. *)
 
-let min_height n =
-  int_of_float(ceil(log(float(n + 1)) /. log 2.));;
+let rec count_leaves = function
+  | Node (_, Empty, Empty) -> 1
+  | Node (_, l, r) -> count_leaves l + count_leaves r
+  | Empty -> 0;;
 
-let max_height n =
-  let rec max_height_search h m_h m_h1 n =
-  if m_h <= n then max_height_search (h + 1) m_h1 (m_h1 + m_h + 1) n
-  else h-1
-  in
-  max_height_search 0 0 1 n;;
+(* 61A. *)
+
+let rec leaves = function
+  | Node (v, Empty, Empty) -> [v]
+  | Node (_, l, r) -> leaves l @ leaves r
+  | Empty -> [];;
+
+(* 62. *)
+
+let rec internals = function
+  | Node (v, Empty, Empty) -> []
+  | Node (v, l, Empty) -> v::internals l
+  | Node (v, Empty, r) -> v::internals r
+  | Node (v, l, r) -> v::internals l @ internals r
+  | Empty -> [];;
+
+(* 62A. *)
+
+let rec at_level tree n = match n, tree with
+  | 1, Node (v, _, _) -> [v]
+  | n, Node (v, l, r) -> at_level l (n - 1) @ at_level r (n - 1)
+  | _ -> []
