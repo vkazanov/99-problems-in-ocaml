@@ -625,4 +625,12 @@ let rec min_nodes h = match h with
   | 1 -> 1
   | n -> 1 + min_nodes (n - 1) + min_nodes (n - 2);;
 
-(* let min_height node_num = *)
+let min_height n =
+  int_of_float(ceil(log(float(n + 1)) /. log 2.));;
+
+let max_height n =
+  let rec max_height_search h m_h m_h1 n =
+  if m_h <= n then max_height_search (h + 1) m_h1 (m_h1 + m_h + 1) n
+  else h-1
+  in
+  max_height_search 0 0 1 n;;
