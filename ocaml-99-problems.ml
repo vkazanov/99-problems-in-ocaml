@@ -599,3 +599,23 @@ let construct values =
 
 let sym_cbal_trees node_num =
   List.filter is_symmetric (cbal_tree node_num);;
+
+(* 59. *)
+
+(* height of a tree is a number of nodes between the root and it's furthers leaf *)
+
+(* so here it should be smth like: one is always n-1 the other one is anything from 0 to n-1 *)
+
+let rec hbal_tree height =
+  let build_variants l r =
+    let variants = List.map (fun ltree -> List.map (fun rtree -> Node ('x', ltree, rtree)) r) l
+    in
+    List.fold_left List.append [] variants
+  in
+  match height with
+  | 0 -> [Empty]
+  | 1 -> [Node ('x', Empty, Empty)]
+  | n ->
+     let t1 = hbal_tree (n - 1) in
+     let t2 = hbal_tree (n - 2) in
+     build_variants t1 t1 @ build_variants t1 t2 @ build_variants t2 t1
