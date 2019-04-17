@@ -680,3 +680,16 @@ let complete_binary_tree lst =
     else Empty
   in
   aux 0 lst (List.length lst);;
+
+(* 64. *)
+
+let layout_binary_tree_1 tree =
+  let rec aux startp h = function
+    | Node (v, l, r) ->
+       let lt, lp = aux startp (h + 1) l in
+       let thisp = lp + 1 in
+       let rt, rp = aux thisp (h + 1) r in
+       Node ((v, thisp, h), lt, rt), rp
+    | Empty -> Empty, startp
+  in
+  aux 0 1 tree;;
