@@ -669,4 +669,14 @@ let rec internals = function
 let rec at_level tree n = match n, tree with
   | 1, Node (v, _, _) -> [v]
   | n, Node (v, l, r) -> at_level l (n - 1) @ at_level r (n - 1)
-  | _ -> []
+  | _ -> [];;
+
+(* 63. *)
+
+let complete_binary_tree lst =
+  let rec aux i lst n =
+    if i < n then
+      Node (List.nth lst i, aux (2 * i + 1) lst n, aux (2 * i + 2) lst n)
+    else Empty
+  in
+  aux 0 lst (List.length lst);;
