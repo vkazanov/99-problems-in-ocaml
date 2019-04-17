@@ -602,10 +602,6 @@ let sym_cbal_trees node_num =
 
 (* 59. *)
 
-(* height of a tree is a number of nodes between the root and it's furthers leaf *)
-
-(* so here it should be smth like: one is always n-1 the other one is anything from 0 to n-1 *)
-
 let rec hbal_tree height =
   let build_variants l r =
     let variants = List.map (fun ltree -> List.map (fun rtree -> Node ('x', ltree, rtree)) r) l
@@ -618,4 +614,15 @@ let rec hbal_tree height =
   | n ->
      let t1 = hbal_tree (n - 1) in
      let t2 = hbal_tree (n - 2) in
-     build_variants t1 t1 @ build_variants t1 t2 @ build_variants t2 t1
+     build_variants t1 t1 @ build_variants t1 t2 @ build_variants t2 t1;;
+
+(* 60. *)
+
+let max_nodes h = 1 lsl h - 1;;
+
+let rec min_nodes h = match h with
+  | 0 -> 0
+  | 1 -> 1
+  | n -> 1 + min_nodes (n - 1) + min_nodes (n - 2);;
+
+(* let min_height node_num = *)
