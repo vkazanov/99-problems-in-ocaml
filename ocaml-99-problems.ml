@@ -693,3 +693,27 @@ let layout_binary_tree_1 tree =
     | Empty -> Empty, startp
   in
   aux 0 1 tree;;
+
+(* 65. *)
+
+let layout_binary_tree_2 tree =
+  let rec tree_depth = function
+    | Node (_, l, r) -> 1 + max (tree_depth l) (tree_depth r)
+    | Empty -> 0
+  in
+  let rec tree_start w = function
+    | Node (_, l, r) -> w + tree_start (w / 2) l
+    | Empty -> 0
+  in
+  let rec aux level_width startp h = function
+    | Node (v, l, r) ->
+       let lt, lp = aux (level_width / 2) (startp - level_width) (h + 1) l in
+       let rt, rp = aux (level_width / 2) (startp + level_width) (h + 1) r in
+       Node ((v, startp, h), lt, rt), rp
+    | Empty -> Empty, startp
+  in
+  let level_width = int_of_float (2.0 ** (float_of_int ((tree_depth tree) - 1))) / 2
+  in
+  let root_x = tree_start level_width tree
+  in
+  aux level_width root_x 1 tree;;
