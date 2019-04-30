@@ -719,3 +719,34 @@ let layout_binary_tree_2 tree =
   aux level_width root_x 1 tree;;
 
 (* 66. TODO *)
+
+(* 67. *)
+
+let rec string_of_tree = function
+  | Node (v, Empty, Empty) -> (String.make 1 v)
+  | Node (v, l, r) -> (String.make 1 v) ^ "(" ^ (string_of_tree l) ^ "," ^ (string_of_tree r) ^")"
+  | Empty -> "";;
+
+let tree_of_string s =
+  let explode str =
+    let rec explode_inner cur_index chars =
+      if cur_index < String.length str then
+        let new_char = str.[cur_index] in
+        explode_inner (cur_index + 1) (chars @ [new_char])
+      else chars in
+    explode_inner 0 [] in
+  let consume c = function
+    | c::rest -> rest
+    | _ -> raise (Invalid_argument "Invalid character")
+  in
+  let rec parse_tree = function
+    | [] -> Empty, []
+    | ','::rest | ')'::rest as all -> Empty, all
+    | c::'('::rest ->
+       let l, rest = parse_tree rest in
+       let rest = consume ',' rest in
+       let r, rest = parse_tree rest in
+       Node (c, l, r), consume ')' rest
+    | c::rest -> Node (c, Empty, Empty), rest
+  in
+  let t, _ = parse_tree (explode s) in t
