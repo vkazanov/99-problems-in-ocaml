@@ -780,3 +780,30 @@ let rec pre_in_tree preo ino =
   | _ -> invalid_arg "pre_in_tree";;
 
 (* 69. TODO *)
+
+(* Multiway Trees *)
+
+type 'a mult_tree = T of 'a * 'a mult_tree list;;
+
+(* 70C. *)
+
+let rec count_nodes (T (_, children)) =
+  1 + List.fold_left (+) 0 (List.map count_nodes children);;
+
+(* 70. *)
+
+let rec string_of_tree (T (c, children)) =
+  String.make 1 c ^
+    List.fold_left (^) "" (List.map (fun child -> (string_of_tree child) ^ "^") children);;
+
+(* NOTE: copypaste below :-( *)
+let rec tree_of_substring t s i len =
+    if i >= len || s.[i] = '^' then List.rev t, i + 1
+    else
+      let sub, j = tree_of_substring [] s (i+1) len in
+      tree_of_substring (T(s.[i], sub) ::t) s j len;;
+
+let tree_of_string s =
+  match tree_of_substring [] s 0 (String.length s) with
+  | [t], _ -> t
+  | _ -> failwith "tree_of_string";;
