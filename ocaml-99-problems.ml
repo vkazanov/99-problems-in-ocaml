@@ -807,3 +807,18 @@ let tree_of_string s =
   match tree_of_substring [] s 0 (String.length s) with
   | [t], _ -> t
   | _ -> failwith "tree_of_string";;
+
+(* 71. *)
+
+let ipl t =
+  let rec aux path (T (_, children)) =
+    let children_paths = List.map (aux (path + 1)) children in
+    path + List.fold_left (+) 0 children_paths
+  in
+  aux 0 t;;
+
+(* 72. *)
+
+let rec prepend_bottom_up (T(c, sub)) l =
+  List.fold_right prepend_bottom_up sub (c :: l);;
+let bottom_up t = prepend_bottom_up t [];;
