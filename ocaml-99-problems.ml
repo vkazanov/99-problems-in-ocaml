@@ -838,3 +838,25 @@ let rec lispy = function
 (*
  * Graphs
  * *)
+
+type 'a graph_term = { nodes : 'a list;  edges : ('a * 'a) list };;
+
+let example_graph =
+  { nodes = ['b'; 'c'; 'd'; 'f'; 'g'; 'h'; 'k'];
+    edges = ['h', 'g';  'k', 'f';  'f', 'b';  'f', 'c';  'c', 'b'] };;
+
+(* 81. *)
+
+let paths graph st nd =
+  let rec aux seen curr =
+    if curr = nd then [List.rev (curr::seen)]
+    else
+      let pairs_to_visit =
+        List.find_all (fun (s, t) -> s = curr && not (List.mem t seen)) graph.edges
+      in
+      let nodes_to_visit =
+        List.map (fun (s, t) -> t) pairs_to_visit
+      in
+      List.fold_left (@) [] (List.map (aux (curr::seen)) nodes_to_visit)
+  in
+  aux [] st;;
