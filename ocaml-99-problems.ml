@@ -860,3 +860,19 @@ let paths graph st nd =
       List.fold_left (@) [] (List.map (aux (curr::seen)) nodes_to_visit)
   in
   aux [] st;;
+
+(* 82. *)
+
+let cycles graph start =
+  let target_nodes_from seen source =
+    List.map snd (List.find_all (fun (s, t) -> s = source && (not (List.mem t seen) || t = start)) graph.edges)
+    @ List.map fst (List.find_all (fun (t, s) -> s = source && (not (List.mem t seen) || t = start)) graph.edges)
+  in
+  let rec aux seen curr =
+    if List.length seen > 0 && curr = start then List.rev [curr::seen]
+    else
+      let target_nodes = target_nodes_from seen curr in
+      List.fold_left (@) [] (List.map (aux (curr::seen)) target_nodes)
+  in
+  (* target_nodes_from start [] *)
+  aux [] start;;
