@@ -822,3 +822,13 @@ let ipl t =
 let rec prepend_bottom_up (T(c, sub)) l =
   List.fold_right prepend_bottom_up sub (c :: l);;
 let bottom_up t = prepend_bottom_up t [];;
+
+(* 73. *)
+
+let rec lispy = function
+  | T (c, []) -> String.make 1 c
+  | T (c, children) ->
+     let children_strings =
+       String.concat " " (List.map lispy children)
+     in
+     "(" ^ String.make 1 c ^ " " ^ children_strings ^ ")"
