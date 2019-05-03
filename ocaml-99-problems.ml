@@ -905,3 +905,39 @@ let queens_positions queens_num =
       List.fold_left ( @ ) [] (List.map (fun c -> aux (c::poslist) (queens_left - 1)) candidates)
   in
   List.filter check_diags (aux [] queens_num);;
+
+(* 95. *)
+
+let full_words num =
+  let digits = [| "zero"; "one"; "two"; "three"; "four"; "five"; "six"; "seven"; "eight"; "nine" |] in
+  let rec aux num_left acc =
+    if num_left > 0 then
+      let n = num_left mod 10 in
+      aux (num_left / 10) ((digits.(n))::acc)
+    else
+      acc
+  in
+  if num = 0 then "zero"
+  else String.concat "-" (aux num []);;
+
+(* 96. *)
+
+
+let identifier ident =
+  let is_letter c = 'a' <= c  && c <= 'z' in
+  let is_num c = '0' <= c  && c <= '9' in
+  let is_alnum c = is_letter c || is_num c in
+  let rec alnum i len = match i with
+    | i when i = len -> false
+    | i when is_alnum ident.[i] -> maybe_negalnum (i + 1) len
+    | _ -> false
+  and maybe_negalnum i len = match i with
+    | i when i = len -> true
+    | i when ident.[i] = '-' -> alnum (i + 1) len
+    | i -> alnum i len
+  and letter i len = match i with
+    | i when i = len -> false
+    | i when is_letter ident.[i] -> maybe_negalnum (i + 1) len
+    | _ -> false
+  in
+  letter 0 (String.length ident);;
