@@ -876,3 +876,32 @@ let cycles graph start =
   in
   (* target_nodes_from start [] *)
   aux [] start;;
+
+(* 87. TODO *)
+
+(*
+ * Miscellaneous Problems
+ **)
+
+(* 91. *)
+
+let queens_positions queens_num =
+  let check_row poslist y =
+    not (List.mem y poslist)
+  in
+  let has_diag coords (x, y) =
+    let coords = List.filter (fun (_, that_y) -> that_y <> y) coords in
+    List.exists (fun (that_x, that_y) -> abs (that_x - x) = abs (that_y - y)) coords
+  in
+  let check_diags poslist =
+    let coords = List.mapi (fun x y -> (x, y)) poslist in
+    not (List.exists (fun (x, y) -> has_diag coords (x, y)) coords)
+  in
+  let rec aux poslist queens_left =
+    if queens_left = 0 then [poslist]
+    else
+      let candidates = List.filter (check_row poslist) (range 0 (queens_num - 1))
+      in
+      List.fold_left ( @ ) [] (List.map (fun c -> aux (c::poslist) (queens_left - 1)) candidates)
+  in
+  List.filter check_diags (aux [] queens_num);;
